@@ -10,7 +10,7 @@ db(process.env.DATABASE_URL);
 
 
 const app = express()
-const port = 8080
+const port = process.env.PORT || 3000
 app.use(express.json()); 
 app.use("/api/user/",userRoutes);
 app.use("/api/quip/",quipRoutes); 

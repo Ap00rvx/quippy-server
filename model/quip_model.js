@@ -25,12 +25,12 @@ const QuipSchema = new mongoose.Schema({
         default: Date.now()
     },
     likes:{
-        type: Number,
-        default: 0
+        type: Array,
+        default: []
     },
     dislikes:{
-        type: Number,
-        default: 0
+        type: Array,
+        default: []
     },
 });
 
