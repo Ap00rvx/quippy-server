@@ -10,7 +10,7 @@ const protection = async (req,res,next )=> {
             const userId = jsonwebtoken.verify(token, process.env.JWT_SECRET);
             console.log(userId['user']['id']);
             req.user = await User.findById(userId['user']['id']).select('-password');
-            console.log(req.user);
+            // console.log(req.user);
             next(); 
         }catch(err){
             console.log(err);
