@@ -1,5 +1,8 @@
 // controllers/userController.js
 const bcrypt = require("bcrypt");
+const sendMail = require('../helper/node_mailer');
+const otpGenerator = require("otp-generator"); 
+const OTP = require("../model/otp_model")
 const jwt = require('jsonwebtoken');
 const User = require('../model/user_model');
 const dotenv = require("dotenv")
@@ -33,13 +36,20 @@ exports.registerUser = async (req, res) => {
                 }
             };  
             await user.save();
+            const newOtp  = otpGenerator.generate(6, {upperCaseAlphabets: false, lowerCaseAlphabets:false, specialChars: false,digits:true});
+            const otpmodel = new OTP({
+                email:email,
+                otp:newOtp,
+            });
+            await sendMail(email,newOtp,username);     
+            await otpmodel.save(); 
             jwt.sign(
                 payload,
                 secret,
                 { expiresIn: '150d' },
                 (err, token) => {
                     if (err)  res.status(201).json({ error:err.message });;
-                    res.status(201).json({ message:"user created",token:token });
+                    res.status(201).json({ message:"user created",token:token,user:user,"note":"Otp has been sent to your email"});
                 }
             );
           
