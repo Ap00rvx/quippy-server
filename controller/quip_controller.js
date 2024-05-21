@@ -138,3 +138,23 @@ exports.addComment = async (req,res)=> {
         res.status(500).send({'status':'failed','message':'Internal Server Error'})
     }
 }
+exports.home = async (req, res) => {
+    try {
+        const quips = await Quip.find()
+            .sort({ createdAt: -1 })
+            .limit(100)
+            .populate('userID', 'name')
+            .populate('comments.user', 'name');
+
+        res.status(200).json({
+            status: 'success',
+            data: quips
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            status: 'failed',
+            message: 'Internal Server Error'
+        });
+    }
+};

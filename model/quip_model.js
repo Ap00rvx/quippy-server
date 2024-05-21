@@ -33,6 +33,10 @@ const QuipSchema = new mongoose.Schema({
         type: Array,
         default: []
     },
+    createdAt:{
+        type :Date,
+        default:Date.now()
+    },
     comments:{
         type:Array,
         default:[]
