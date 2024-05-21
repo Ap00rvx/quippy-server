@@ -18,5 +18,4 @@ const protection = async (req,res,next )=> {
         }
     }
 }
-
 module.exports  = protection ;

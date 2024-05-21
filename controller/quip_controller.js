@@ -3,6 +3,7 @@ const User = require('../model/user_model');
 const dotenv = require("dotenv")
 dotenv.config()
 const Quip = require("../model/quip_model");
+const commentModel = require("../model/comment_model");
 
 
 exports.createNewQuip  = async (req,res) => {
@@ -106,3 +107,34 @@ exports.updateDisLikes = async (req, res) => {
         res.status(500).send({ status: "failed", message: "Internal Server Error" });
     }
 };
+exports.addComment = async (req,res)=> {
+    const quipID = req.header("quipID");
+    const userID = req.user._id;
+    try {
+        if(userID && quipID ){
+            let quip = await Quip.findById(quipID);
+            if(!quip){
+                return res.status(404).send({"message":"Quip not found"}); 
+            }
+            const comment = req.body.comment;
+            if(!comment){
+                return res.status(402).send({"message":"All fields are required"});
+            }
+            const newComment = new commentModel({
+                comment:comment,
+                user:userID,
+                quip:quipID,
+            });
+            await newComment.save(); 
+            quip.comments.push(newComment._id);
+            await quip.save();
+            res.status(201).send({"message":"Comment added"});
+        }
+        else{
+            res.status(400).send({"message":"Auathorized Sender"}); 
+        }
+    }catch (err){
+        console.log(err);
+        res.status(500).send({'status':'failed','message':'Internal Server Error'})
+    }
+}

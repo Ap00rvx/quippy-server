@@ -1,4 +1,5 @@
 const { default: mongoose } = require("mongoose");
+const commentModel = require("./comment_model");
 
 const QuipSchema = new mongoose.Schema({
     title :{
@@ -31,6 +32,10 @@ const QuipSchema = new mongoose.Schema({
     dislikes:{
         type: Array,
         default: []
+    },
+    comments:{
+        type:Array,
+        default:[]
     },
 });
 
