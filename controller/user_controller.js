@@ -117,4 +117,19 @@ exports.profile = async (req,res) => {
     }
 }
 
+exports.checkUsername = async(req,res) => {
+    try {
+        const {username} = req.body;
+        const user = await User.findOne({username:username});
+        if (user){
+            res.send({"message":"User name is already taken"});
+        }
+        else{
+            res.status(200).send({"message":"User name available"}); 
+        }
+    }catch(Err){
+        console.log(Err);
+        res.status(500).send({'status':'failed','message':'Internal Server Error'})
+    }
+}
 
