@@ -158,3 +158,27 @@ exports.home = async (req, res) => {
         });
     }
 };
+exports.getComments = async (req, res) => {
+    const id = req.params.id;
+    console.log(id);
+    try {
+        // Find the quip by its ID
+        const quip = await Quip.findOne({ _id: id });
+
+        if (!quip) {
+            return res.status(404).send({ status: 'failed', message: 'Quip not found' });
+        }
+
+        // Extract the comment IDs from the quip
+        const commentIds = quip.comments;
+
+        // Fetch the comments using the extracted IDs
+        const comments = await commentModel.find({ _id: { $in: commentIds } });
+
+        // Send the comments in the response
+        res.status(200).send({ status: 'success', comments });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ status: 'failed', message: 'Internal Server Error' });
+    }
+};

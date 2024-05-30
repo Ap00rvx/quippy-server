@@ -166,7 +166,7 @@ exports.followUnfollow = async(req,res) =>{
     const {followId} = req.body ;
     const userID  = req.user._id; 
     if(followId == userID){
-      return   res.status(402).send({"message":"users are same"}); 
+      return   res.status(400).send({"message":"users are same"}); 
     }
     if(followId){
         try {
