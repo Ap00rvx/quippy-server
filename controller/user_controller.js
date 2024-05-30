@@ -162,3 +162,41 @@ exports.verifyOtp = async(req,res) => {
         res.status(400).send({"message":"Please enter otp and email"})
     }
 }
+exports.followUnfollow = async(req,res) =>{
+    const {followId} = req.body ;
+    const userID  = req.user._id; 
+    if(followId == userID){
+      return   res.status(402).send({"message":"users are same"}); 
+    }
+    if(followId){
+        try {
+            let user = await User.findById(userID);
+            let followUser = await User.findById(followId);
+            if(user && followUser){
+            const index  = followUser.followers.indexOf(userID);
+            if(index >-1){
+                followUser.followers.splice(index,1);
+                await followUser.save();
+                res.status(200).send({"message":"Follower removed"}); 
+
+            }
+            else{
+                followUser.followers.push(userID);
+                await followUser.save();
+                res.status(200).send({"message":"Follower Added"}); 
+            }
+        }
+        else{
+            res.status(404).send({"message":"Users not found"}); 
+        }
+        }catch(err){
+            console.log(err);
+            res.status(500).send({'status':'failed','message':'Internal Server Error'})
+        }
+    
+    }
+    else{
+        res.status(400).send({"message":"Please enter followId"})
+    }
+
+}
