@@ -139,7 +139,7 @@ exports.verifyOtp = async(req,res) => {
             try {
                 let  user = await User.findOne({email:email});
                 if(user){
-                    const otpModel = await OTP.findOne({otp : otp});
+                    const otpModel = await OTP.findOne({email : email});
                      if(otpModel.otp === otp){
                         user.isVerified = true; 
                         await user.save();
