@@ -133,3 +133,32 @@ exports.checkUsername = async(req,res) => {
     }
 }
 
+exports.verifyOtp = async(req,res) => {
+    const {otp,email}= req.body ; 
+    if(otp && email){
+            try {
+                let  user = await User.findOne({email:email});
+                if(user){
+                    const otpModel = await OTP.findOne({otp : otp});
+                     if(otpModel.otp === otp){
+                        user.isVerified = true; 
+                        await user.save();
+                        await OTP.deleteOne({email :email }); 
+                        res.status(200).send({"message":"User verified successfully"});
+                     }
+                     else{
+                        res.status(400).send({"message":"Invalid OTP"});
+                     }
+                }
+                else{
+                    res.status(404).json({message : 'user not found'});
+                }
+            }catch(err){
+                console.log(err);
+                res.status(500).send({'status':'failed','message':'Internal Server Error'})
+            }
+    }
+    else{
+        res.status(400).send({"message":"Please enter otp and email"})
+    }
+}
