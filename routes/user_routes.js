@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {registerUser,loginUser,profile,checkUsername,verifyOtp,followUnfollow,getUser} = require("../controller/user_controller");
+const {registerUser,loginUser,profile,checkUsername,verifyOtp,followUnfollow,getUser,changePassword} = require("../controller/user_controller");
 const protection = require("../middleware/user_middleware")
 
 router.post("/register",registerUser); 
@@ -11,6 +11,7 @@ router.get("/profile/:id",getUser);
 
 router.get("/profile",protection,profile); 
 router.post("/follow",protection,followUnfollow)
+router.post("/changePassword",protection,changePassword); 
 
 
 module.exports = router;

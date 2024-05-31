@@ -220,3 +220,33 @@ exports.getUser  = async(req,res) => {
         res.status(500).send({'status':'failed','message':'Internal Server Error'})
     }
 }
+
+exports.changePassword = async (req, res) => {
+    const { email, oldPassword, newPassword } = req.body;
+
+    if (!email || !oldPassword || !newPassword) {
+        return res.status(400).send({ message: 'Please provide email, old password, and new password' });
+    }
+
+    try {
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+
+        if (!isMatch) {
+            return res.status(400).send({ message: 'Old password is incorrect' });
+        }
+
+        user.password = newPassword;
+        await user.save();
+
+        res.status(200).send({ message: 'Password changed successfully' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({ message: 'Internal Server Error' });
+    }
+};
