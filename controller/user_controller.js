@@ -200,3 +200,23 @@ exports.followUnfollow = async(req,res) =>{
     }
 
 }
+exports.getUser  = async(req,res) => {
+    const id = req.params.id; 
+    try{
+    if(id){
+        const user = await User.findById(id).select("-password"); 
+        if(user){
+            res.status(200).send({"status":"success",user});
+        }
+        else{
+            res.status(404).send({"message":"User not found"});
+        }
+    }
+    else{
+        res.status(400).send({"message":"UserId is incorrect"}); 
+    }
+    }catch(err){
+        console.log(err);
+        res.status(500).send({'status':'failed','message':'Internal Server Error'})
+    }
+}
