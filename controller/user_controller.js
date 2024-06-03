@@ -122,10 +122,10 @@ exports.checkUsername = async(req,res) => {
         const {username} = req.body;
         const user = await User.findOne({username:username});
         if (user){
-            res.send({"message":"User name is already taken"});
+            res.send({"ava":false,"message":"User name is already taken"});
         }
         else{
-            res.status(200).send({"message":"User name available"}); 
+            res.status(200).send({"ava":true,"message":"User name available"}); 
         }
     }catch(Err){
         console.log(Err);
