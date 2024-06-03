@@ -120,6 +120,7 @@ exports.profile = async (req,res) => {
 exports.checkUsername = async(req,res) => {
     try {
         const {username} = req.body;
+        if(username){
         const user = await User.findOne({username:username});
         if (user){
             res.send({"ava":false,"message":"User name is already taken"});
@@ -127,6 +128,10 @@ exports.checkUsername = async(req,res) => {
         else{
             res.status(200).send({"ava":true,"message":"User name available"}); 
         }
+    }
+    else{
+        res.status(400).send({"message":"All fields are required "}); 
+    }
     }catch(Err){
         console.log(Err);
         res.status(500).send({'status':'failed','message':'Internal Server Error'})
