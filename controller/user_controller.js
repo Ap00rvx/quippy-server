@@ -72,12 +72,12 @@ exports.loginUser = async (req, res) => {
 
         let user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: 'Invalid Credentials' });
+            return res.status(200).json({ message: 'User not Found ' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid Credentials' });
+            return res.status(200).json({ message: 'Invalid Credentials' });
         }
         const payload = {
             user: {
@@ -91,7 +91,7 @@ exports.loginUser = async (req, res) => {
             secret,
             { expiresIn: '150d' },
             (err, token) => {
-                if (err)  res.status(400).json({ error:err.message });;
+                if (err)  res.status(200).json({ error:err.message });;
                 res.status(200).json({ message:"user login success",token:token });
             }
         );
