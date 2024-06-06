@@ -65,6 +65,7 @@ exports.registerUser = async (req, res) => {
 
     
 };
+
 exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
 
@@ -114,6 +115,44 @@ exports.profile = async (req,res) => {
     }catch(Err){
         console.log(Err);
         res.status(500).send({'status':'failed','message':'Internal Server Error'})
+    }
+}
+exports.googleSignIn = async (req, res) => {
+    const { tokenId } = req.body;
+    const CLIENT_ID = '207296614294-kfc0poth6knkl4n9ke8keo0n4cu6i8ma.apps.googleusercontent.com'; // Replace with your Google Client ID
+
+const client = new OAuth2Client(CLIENT_ID);
+
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: tokenId,
+            audience: CLIENT_ID,
+        });
+
+        const payload = ticket.getPayload();
+
+        const userId = payload['sub'];
+        const userEmail = payload['email'];
+        const userName = payload['name'];
+
+        // Here, you can process the user data as per your application's requirements
+        // For example, you can save the user to a database, create a session, etc.
+
+        res.status(200).json({
+            success: true,
+            message: 'Google authentication successful',
+            user: {
+                id: userId,
+                email: userEmail,
+                name: userName
+            }
+        });
+    } catch (error) {
+        console.error('Error verifying Google token:', error);
+        res.status(400).json({
+            success: false,
+            message: 'Google authentication failed'
+        });
     }
 }
 
